@@ -1,10 +1,11 @@
-FROM node:latest
-RUN mkdir -p /usr/src/app
+#Stage 1
+FROM node:8.11.2-alpine as node
 WORKDIR /usr/src/app
-COPY package.json /usr/src/app
-RUN npm cache verify
+COPY package*.json ./
 RUN npm install
-RUN npm audit fix
-COPY . /usr/src/app
-EXPOSE 8000
-CMD ["npm","start","--port 8000"]
+COPY . .
+# RUN npm run build
+# Stage 2
+FROM node
+RUN npm install http-server -g
+CMD ["http-server","-p","8000", "dist/AngularService"]
